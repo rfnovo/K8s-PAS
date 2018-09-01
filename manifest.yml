@@ -1,0 +1,10 @@
+---
+applications:
+- name: my-crud-app
+  host: mycrudapp
+  memory: 512M
+  instances: 1
+  path: app
+  command: python server.py
+  services:
+   - mysql1

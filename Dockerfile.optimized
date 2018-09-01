@@ -1,0 +1,22 @@
+FROM python:2.7-alpine
+
+COPY app/ /app/
+
+WORKDIR /app
+
+RUN set -e; \
+  apk update \
+#  && apk add --virtual .build-deps gcc python3-dev musl-dev libffi-dev
+  && apk add --virtual .build-deps gcc musl-dev libffi-dev
+
+RUN apk del libressl-dev \
+  && apk add openssl-dev \
+  && pip install cryptography==2.2.2 \  
+  && apk del openssl-dev \
+  && apk add libressl-dev
+
+RUN apk add postgresql-dev \
+  && pip install --no-cache-dir -r requirements.txt \
+  && apk del .build-deps
+
+CMD [ "python", "./server.py" ]
